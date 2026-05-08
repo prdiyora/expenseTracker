@@ -2,7 +2,7 @@ import React, { useState, useReducer, useMemo, useEffect } from 'react';
 import './styles/App.css';
 import { COLORS, INITIAL_TRANSACTIONS, INITIAL_CATEGORIES } from './constants/theme';
 import Sidebar from './components/Sidebar';
-import { BarChart, DonutChart, AreaTrendChart, TransactionHistoryChart } from './components/Charts';
+import { BarChart, DonutChart, AreaTrendChart, TransactionHistoryChart, ChartLegend } from './components/Charts';
 import AddTransactionModal from './components/AddTransactionModal';
 
 // --- HELPERS ---
@@ -144,10 +144,26 @@ export default function App() {
                <div className="card"><h3>Last 7 Incomes (₹)</h3><TransactionHistoryChart txs={stats.last7Incomes} color={COLORS.income} textMutedColor={COLORS.textMuted} /></div>
             </div>
 
-            <div className="dashboard-grid">
-               <div className="card"><h3>{currentMonthName} Balance Trend</h3><AreaTrendChart history={stats.trendData} color={COLORS.accent} /></div>
-               <div className="card"><h3>Income vs Expense</h3><BarChart income={stats.income} expense={stats.expense} incomeColor={COLORS.income} dangerColor={COLORS.danger} textMutedColor={COLORS.textMuted} /></div>
-               <div className="card"><h3>Category Breakdown</h3><DonutChart data={stats.catData} cardColor={COLORS.card} borderColor={COLORS.border} /></div>
+            <div className="dashboard-grid full-width">
+               <div className="card">
+                 <h3>{currentMonthName} Balance Trend</h3>
+                 <div className="chart-container">
+                    <AreaTrendChart history={stats.trendData} color={COLORS.accent} />
+                 </div>
+               </div>
+               <div className="card">
+                 <h3>{currentMonthName} Income vs Expense</h3>
+                 <div className="chart-container">
+                    <BarChart income={stats.income} expense={stats.expense} incomeColor={COLORS.income} dangerColor={COLORS.danger} textMutedColor={COLORS.textMuted} />
+                 </div>
+               </div>
+               <div className="card">
+                 <h3>Category Breakdown</h3>
+                 <div className="chart-container donut-mode">
+                    <DonutChart data={stats.catData} cardColor={COLORS.card} borderColor={COLORS.border} />
+                    <ChartLegend data={stats.catData.map(d => ({ ...d, icon: categories[d.name]?.icon, label: categories[d.name]?.label }))} />
+                 </div>
+               </div>
             </div>
           </>
         )}

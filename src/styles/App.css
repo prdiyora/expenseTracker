@@ -55,7 +55,22 @@ h1, h2, h3 { font-family: 'Sora', sans-serif; }
 .stat-label { color: #8b949e; font-size: 0.9rem; margin-bottom: 0.5rem; }
 .stat-value { font-size: 2.1rem; font-weight: 700; font-family: 'Sora'; }
 
-.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+.dashboard-grid.full-width { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
+
+.chart-container {
+  height: 220px;
+  width: 100%;
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-container.donut-mode {
+  flex-direction: column;
+  height: auto;
+}
 
 .progress-bg { background: #30363d; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 0.6rem; }
 .progress-fill { height: 100%; transition: width 1s ease; }
@@ -73,6 +88,53 @@ h1, h2, h3 { font-family: 'Sora', sans-serif; }
   background: #161b22; border: 1px solid #30363d; color: #00d4aa; padding: 0.4rem 1rem; border-radius: 8px; cursor: pointer;
 }
 .pagination-controls button:disabled { color: #8b949e; cursor: not-allowed; }
+
+.chart-legend {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-height: 150px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.chart-legend::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chart-legend::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.85rem;
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-label {
+  color: var(--text-muted);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.legend-value {
+  color: var(--text);
+  font-weight: 600;
+  font-family: 'Sora', sans-serif;
+}
 
 .professional-tooltip {
   position: absolute; top: 10px; right: 10px; background: rgba(0, 212, 170, 0.1);

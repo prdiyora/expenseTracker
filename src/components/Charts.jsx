@@ -27,7 +27,9 @@ export const DonutChart = ({ data, cardColor, borderColor }) => {
           const x2 = 50 + 40 * Math.cos((Math.PI * (currentAngle - 90)) / 180);
           const y2 = 50 + 40 * Math.sin((Math.PI * (currentAngle - 90)) / 180);
           const largeArcFlag = sliceAngle > 180 ? 1 : 0;
+          
           if (sliceAngle >= 359.9) return <circle key={i} cx="50" cy="50" r="40" fill={item.color} onMouseEnter={() => setHovered(item)} onMouseLeave={() => setHovered(null)} />;
+          
           return (
             <path key={i} d={`M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArcFlag} 1 ${x2} ${y2} Z`} fill={item.color}
               onMouseEnter={() => setHovered(item)} onMouseLeave={() => setHovered(null)}
@@ -96,6 +98,20 @@ export const TransactionHistoryChart = ({ txs, color, textMutedColor }) => {
         </div>
       ))}
       {hovered && <div className="professional-tooltip">{hovered.merchant}: ₹{hovered.amount.toLocaleString()}</div>}
+    </div>
+  );
+};
+
+export const ChartLegend = ({ data }) => {
+  return (
+    <div className="chart-legend">
+      {data.map(item => (
+        <div key={item.name} className="legend-item">
+          <div className="legend-color" style={{ background: item.color }} />
+          <span className="legend-label">{item.icon} {item.label}</span>
+          <span className="legend-value">₹{item.value.toLocaleString()}</span>
+        </div>
+      ))}
     </div>
   );
 };
