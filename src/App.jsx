@@ -4,6 +4,8 @@ import { COLORS, INITIAL_TRANSACTIONS, INITIAL_CATEGORIES } from './constants/th
 import Sidebar from './components/Sidebar';
 import { BarChart, DonutChart, AreaTrendChart, TransactionHistoryChart, ChartLegend } from './components/Charts';
 import AddTransactionModal from './components/AddTransactionModal';
+import { supabase } from './lib/supabaseClient';
+import Auth from './components/Auth';
 
 // --- HELPERS ---
 const formatFullDate = (dateObj) => {
@@ -33,18 +35,34 @@ function transactionReducer(state, action) {
 }
 
 export default function App() {
+  const [session, setSession] = useState(null);
   const [view, setView] = useState('Dashboard');
   const [transactions, dispatch] = useReducer(transactionReducer, []);
   const [categories, setCategories] = useState(INITIAL_CATEGORIES);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!session) return;
     const savedTxs = localStorage.getItem('spendly_transactions');
     const savedCats = localStorage.getItem('spendly_categories');
     if (savedTxs) dispatch({ type: 'SET', payload: JSON.parse(savedTxs) });
     else dispatch({ type: 'SET', payload: INITIAL_TRANSACTIONS });
     if (savedCats) setCategories(JSON.parse(savedCats));
-  }, []);
+  }, [session]);
 
   const handleSetCategories = (newCats) => {
     setCategories(newCats);
@@ -110,6 +128,10 @@ export default function App() {
     dispatch({ type: 'ADD', payload: { ...formData, amount: parseFloat(formData.amount), id: Date.now() } });
     setIsModalOpen(false);
   };
+
+  if (!session) {
+    return <Auth />;
+  }
 
   return (
     <div className="app-container">
