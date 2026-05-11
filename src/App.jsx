@@ -42,6 +42,8 @@ export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   
   useEffect(() => {
+    if (!supabase) return;
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
@@ -128,6 +130,17 @@ export default function App() {
     dispatch({ type: 'ADD', payload: { ...formData, amount: parseFloat(formData.amount), id: Date.now() } });
     setIsModalOpen(false);
   };
+
+  if (!supabase) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: COLORS.bg, color: COLORS.text, textAlign: 'center', padding: '2rem' }}>
+        <div>
+          <h1 style={{ color: COLORS.danger }}>Configuration Error</h1>
+          <p>Supabase environment variables are missing. Please add them to Vercel/Local environment.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!session) {
     return <Auth />;
