@@ -37,6 +37,7 @@ export default function App() {
   const [transactions, dispatch] = useReducer(transactionReducer, []);
   const [categories, setCategories] = useState(INITIAL_CATEGORIES);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   useEffect(() => {
     const savedTxs = localStorage.getItem('spendly_transactions');
@@ -113,16 +114,19 @@ export default function App() {
 
   return (
     <div className="app-container">
-      <Sidebar currentView={view} setView={setView} />
+      <Sidebar currentView={view} setView={(v) => { setView(v); setIsSidebarOpen(false); }} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       <main className="main-content">
         <header className="top-header">
-          <div>
-            <h1>{view}</h1>
-            <div className="month-selector">
-               <button onClick={() => changeMonth(-1)}>←</button>
-               <span>{currentMonthName}</span>
-               <button onClick={() => changeMonth(1)}>→</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <button className="menu-toggle" onClick={() => setIsSidebarOpen(true)}>☰</button>
+            <div>
+              <h1>{view}</h1>
+              <div className="month-selector">
+                 <button onClick={() => changeMonth(-1)}>←</button>
+                 <span>{currentMonthName}</span>
+                 <button onClick={() => changeMonth(1)}>→</button>
+              </div>
             </div>
           </div>
           <div style={{ display: 'flex', gap: '1rem' }}>
